@@ -86,6 +86,9 @@
       <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\packages\System.IO.Abstractions.2.0.0.115\lib\net40\System.IO.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reflection.Metadata">
       <HintPath>..\packages\System.Reflection.Metadata.1.0.18-beta\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
     </Reference>
@@ -96,6 +99,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Analysis\ClassAnalysis.cs" />
+    <Compile Include="Domain\Analysis\FileAnalysis.cs" />
+    <Compile Include="Domain\Analysis\MethodAnalysis.cs" />
+    <Compile Include="Domain\Analysis\ProjectAnalysis.cs" />
+    <Compile Include="Domain\Analysis\SolutionAnalysis.cs" />
+    <Compile Include="Domain\FileSource.cs" />
+    <Compile Include="Domain\SolutionSource.cs" />
+    <Compile Include="Domain\SolutionSourceService.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
