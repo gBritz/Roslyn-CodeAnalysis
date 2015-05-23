@@ -1,0 +1,33 @@
+version: 0.1.{build}
+
+skip_tags: true
+
+configuration: Release
+
+install:
+  - cinst opencover -source https://nuget.org/api/v2/
+  - cinst install coveralls.io -source https://nuget.org/api/v2/
+
+branches:
+  only:
+  - master
+
+environment:
+  COVERALLS_REPO_TOKEN:
+    secure: i5Lh6KW6KD6ykT8FLTydKQDHeXIuhH9S+Nhf3AH4Itop3Y7+VOX3iYYSqAH7b74c
+
+before_build:
+  - nuget restore src\RoslynCodeAnalysis.sln
+
+build:
+  project: src\RoslynCodeAnalysis.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
+
+test_script:
+  - OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:"\"src\RoslynCodeAnalysis.Tests\bin\Release\RoslynCodeAnalysis.Tests.dll\" /logger:Appveyor" -skipautoprops -filter:"+[RoslynCodeAnalysis*]*" -output:coverage.xml
+  - coveralls.net --opencover coverage.xml
+
+artifacts:
+  - path: coverage.xml
