@@ -96,6 +96,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Analysis\ClassAnalysis.cs" />
+    <Compile Include="Domain\Analysis\FileAnalysis.cs" />
+    <Compile Include="Domain\Analysis\MethodAnalysis.cs" />
+    <Compile Include="Domain\Analysis\ProjectAnalysis.cs" />
+    <Compile Include="Domain\Analysis\SolutionAnalysis.cs" />
+    <Compile Include="Domain\FileSource.cs" />
+    <Compile Include="Domain\SolutionSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
