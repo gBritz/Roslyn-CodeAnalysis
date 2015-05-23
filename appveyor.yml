@@ -6,7 +6,7 @@ configuration: Release
 
 install:
   - cinst opencover -source https://nuget.org/api/v2/
-  - cinst install coveralls.io -source https://nuget.org/api/v2/
+  - cinst coveralls.io -source https://nuget.org/api/v2/
 
 branches:
   only:
