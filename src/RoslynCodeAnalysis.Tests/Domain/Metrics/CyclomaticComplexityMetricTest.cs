@@ -18,6 +18,8 @@ namespace RoslynCodeAnalysis.Tests.Domain.Metrics
             metric = new CyclomaticComplexityMetric(new ConditionsCounterMetric());
         }
 
+        #region Simple basic
+
         [TestMethod]
         public void Given_method_with_if_of_1_condition_when_metric_measure_should_be_2()
         {
@@ -141,7 +143,7 @@ public int ForeachContinueMethod(int[] arr)
         }
 
         [TestMethod]
-        public void Given_method_with_goto_of_1_condition_when_metric_measure_should_be_2()
+        public void Given_method_with_goto_of_1_condition_when_metric_measure_should_be_1()
         {
             var code = @"
 public int GotoMethod(int i)
@@ -207,6 +209,14 @@ public int NullCoalescingOperatorMethod(object i)
 
             metric.Measure(root).Should().Be(2);
         }
+
+        #endregion
+
+        #region Two statements
+
+        //Duas chamadas consecutivas de: if, while, for, foreach, case, default, continue, goto, &&, ||, catch, operador ternário (?:, ??)
+
+        #endregion
 
         private static SyntaxNode ParseMethodBlock(String code)
         {
