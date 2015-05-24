@@ -67,6 +67,22 @@ namespace RoslynCodeAnalysis.Domain.Metrics
                     //case ??
                     cc++;
                     break;
+
+                case SyntaxKind.EqualsToken:
+                    // Identificar se é ?: ou ??
+                    if (token.Parent is AssignmentExpressionSyntax)
+                    {
+                        var str = token.Parent.GetText().ToString();
+                        if (str.Contains("??"))
+                        {
+                            cc += 1;
+                        }
+                        else if (str.Contains("?") && str.Contains(":"))
+                        {
+                            cc += 1;
+                        }
+                    }
+                    break;
             }
         }
     }

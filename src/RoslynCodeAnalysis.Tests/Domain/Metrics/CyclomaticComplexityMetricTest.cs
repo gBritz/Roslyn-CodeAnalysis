@@ -180,6 +180,34 @@ public int TryCatchMethod(int i, int j)
             metric.Measure(root).Should().Be(2);
         }
 
+        [TestMethod]
+        public void Given_method_with_ternary_operator_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public int TernaryOperatorMethod(int i)
+{
+    i = i > 20 ? 10 : 20;
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
+        }
+
+        [TestMethod]
+        public void Given_method_with_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public int NullCoalescingOperatorMethod(object i)
+{
+    i = i ?? 10;
+    return Convert.ToInt32(i);
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
+        }
+
         private static SyntaxNode ParseMethodBlock(String code)
         {
             var tree = CSharpSyntaxTree.ParseText(code);
