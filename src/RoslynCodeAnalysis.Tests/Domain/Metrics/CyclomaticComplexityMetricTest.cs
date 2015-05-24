@@ -24,7 +24,7 @@ namespace RoslynCodeAnalysis.Tests.Domain.Metrics
         public void Given_method_with_if_of_1_condition_when_metric_measure_should_be_2()
         {
             var code = @"
-public void CalculoMaluco(int i)
+public void IfMethod(int i)
 {
     var res = 5;
     if (i > 10)
@@ -182,45 +182,15 @@ public int TryCatchMethod(int i, int j)
             metric.Measure(root).Should().Be(2);
         }
 
-        [TestMethod]
-        public void Given_method_with_ternary_operator_of_1_condition_when_metric_measure_should_be_2()
-        {
-            var code = @"
-public int TernaryOperatorMethod(int i)
-{
-    i = i > 20 ? 10 : 20;
-    return i;
-}";
-            var root = ParseMethodBlock(code);
-
-            metric.Measure(root).Should().Be(2);
-        }
-
-        [TestMethod]
-        public void Given_method_with_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_2()
-        {
-            var code = @"
-public int NullCoalescingOperatorMethod(object i)
-{
-    i = i ?? 10;
-    return Convert.ToInt32(i);
-}";
-            var root = ParseMethodBlock(code);
-
-            metric.Measure(root).Should().Be(2);
-        }
-
         #endregion
 
         #region Two consecutive statements
-
-        //Duas chamadas consecutivas de: if, while, for, foreach, case, default, continue, goto, &&, ||, catch, operador ternário (?:, ??)
 
         [TestMethod]
         public void Given_method_with_2_ifs_of_1_condition_when_metric_measure_should_be_3()
         {
             var code = @"
-public void CalculoMaluco(int i)
+public void IfMethod(int i)
 {
     var res = 5;
     if (i > 10)
@@ -436,6 +406,217 @@ public int TryCatchMethod(int i, int j)
             metric.Measure(root).Should().Be(3);
         }
 
+        #endregion
+
+        #region Two nested statements
+
+        [TestMethod]
+        public void Given_method_with_2_nested_ifs_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public void IfMethod(int i)
+{
+    var res = 5;
+    if (i > 10)
+    {
+        i += 15;
+        if (i > 20)
+            i += 5;
+    }
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_while_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int WhileMethod(int i)
+{
+    while (i > 20)
+    {
+        i -= 10;
+        while (i > 10)
+            i -= 5;
+    }
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_for_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int ForMethod(int i)
+{
+    for (var j = 0; j < i; j++)
+    {
+        i += 10;
+        for (var e = 0; e < i+5; e++)
+        {
+            i -= 5;
+        }
+    }
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_foreach_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int ForeachMethod(int[] arr)
+{
+    var res = 0;
+    foreach (var v in arr)
+    {
+        res += v;
+        foreach (var j in arr)
+        {
+            res += j;
+        }
+    }
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_switch_cases_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int SwitchCaseMethod(int i)
+{
+    switch (i)
+    {
+        case 20:
+        {
+            i += 10;
+
+            switch (i)
+            {
+                case 50:
+                    i += 15;
+                    break;
+            }
+
+            break;
+        }
+    }
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_for_continue_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int ForContinueMethod(int i)
+{
+    for (var j = 0; j < i; j++)
+    {
+        i += 10;
+        for (var e = 0; e < i; e++)
+        {
+            i += 10;
+            continue;
+        }
+        continue;
+    }
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_foreach_continue_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int ForeachContinueMethod(int[] arr, int[] arr2)
+{
+    var res = 0;
+    foreach (var v in arr)
+    {
+        res += v;
+        foreach (var j in arr2)
+        {
+            res += j;
+            continue;
+        }
+        continue;
+    }
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_try_2_nested_catch_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int TryCatchMethod(int i, int j)
+{
+    try
+    {
+        try
+        {
+            i = i / j;
+        }
+        catch (ArithmeticException ex)
+        {
+            i = i / j;
+        }        
+    }
+    catch (Exception ex)
+    {
+        i = 0;
+    }
+
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Ternary (?:) operator
+
+        [TestMethod]
+        public void Given_method_with_ternary_operator_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public int TernaryOperatorMethod(int i)
+{
+    i = i > 20 ? 10 : 20;
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
+        }
+
         [TestMethod]
         public void Given_method_with_2_ternary_operator_of_1_condition_when_metric_measure_should_be_3()
         {
@@ -449,6 +630,24 @@ public int TernaryOperatorMethod(int i)
             var root = ParseMethodBlock(code);
 
             metric.Measure(root).Should().Be(3);
+        }
+
+        #endregion
+
+        #region null coalescing (??) operator
+
+        [TestMethod]
+        public void Given_method_with_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public int NullCoalescingOperatorMethod(object i)
+{
+    i = i ?? 10;
+    return Convert.ToInt32(i);
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
         }
 
         [TestMethod]
@@ -465,6 +664,8 @@ public int NullCoalescingOperatorMethod(object i)
 
             metric.Measure(root).Should().Be(3);
         }
+
+        #endregion
 
         #endregion
 
