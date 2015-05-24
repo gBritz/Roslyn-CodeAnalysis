@@ -12,6 +12,8 @@ namespace RoslynCodeAnalysis.Domain.Metrics
         public Int32 Measure(SyntaxNode node)
         {
             countConditions = 0;
+            Visit(node);
+            return countConditions;
         }
 
         public override void VisitBinaryExpression(BinaryExpressionSyntax node)

@@ -49,7 +49,7 @@ namespace RoslynCodeAnalysis.Domain.Metrics
 
                     foreach (var expression in expressions)
                     {
-                        cc ++ conditions.Measure(expression);
+                        cc += conditions.Measure(expression);
                     }
 
                     break;
