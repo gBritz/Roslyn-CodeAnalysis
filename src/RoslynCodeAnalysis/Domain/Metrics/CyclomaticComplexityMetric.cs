@@ -14,7 +14,7 @@ namespace RoslynCodeAnalysis.Domain.Metrics
     /// </summary>
     public class CyclomaticComplexityMetric : SyntaxWalker, IMetric
     {
-        private int cc = 1;
+        private int cc;
         private readonly IMetric conditions;
 
         public CyclomaticComplexityMetric(IMetric conditions)
@@ -28,7 +28,7 @@ namespace RoslynCodeAnalysis.Domain.Metrics
 
         public Int32 Measure(SyntaxNode token)
         {
-            cc = 0;
+            cc = 1;
             Visit(token);
             return cc;
         }
@@ -54,11 +54,12 @@ namespace RoslynCodeAnalysis.Domain.Metrics
 
                     break;
 
+                case SyntaxKind.ForKeyword:
                 case SyntaxKind.ForEachKeyword:
                 case SyntaxKind.CaseKeyword:
                 case SyntaxKind.DefaultKeyword:
-                case SyntaxKind.ContinueKeyword:
-                case SyntaxKind.GotoKeyword:
+                //case SyntaxKind.ContinueKeyword:
+                //case SyntaxKind.GotoKeyword:
                 //case SyntaxKind.AndAssignmentExpression: //case &&
                 //case SyntaxKind.OrAssignmentExpression: //case ||
                 case SyntaxKind.CatchKeyword:
