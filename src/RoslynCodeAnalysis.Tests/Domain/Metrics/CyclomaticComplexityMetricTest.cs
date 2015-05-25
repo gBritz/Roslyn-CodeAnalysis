@@ -599,6 +599,98 @@ public int TryCatchMethod(int i, int j)
 
         #endregion
 
+        #region if and else
+
+        [TestMethod]
+        public void Given_method_with_if_and_else_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public void IfMethod(int i)
+{
+    var res = 5;
+    if (i > 10)
+        i += 15;
+    else
+        i += 5;
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_if_and_else_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public void IfMethod(int i)
+{
+    var res = 5;
+    if (i > 10)
+        i += 15;
+    else
+        i += 5;
+
+    if (i > 50)
+        i += 25;
+    else
+        i += 35;
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_nested_if_and_else_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public void IfMethod(int i)
+{
+    var res = 5;
+    if (i > 10)
+    {
+        i += 15;
+    } else {
+        if (i < 10)
+            i += 25;
+        else
+            i += 35;
+    }
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_if_and_else_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public void IfMethod(int i)
+{
+    var res = 5;
+    if (i > 10)
+    {
+        i += 15;
+    }
+    else if (i < 10)
+    {
+        i += 25;
+    }
+    else
+        i += 35;
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        #endregion
+
         #region Operators
 
         #region Ternary (?:) operator
