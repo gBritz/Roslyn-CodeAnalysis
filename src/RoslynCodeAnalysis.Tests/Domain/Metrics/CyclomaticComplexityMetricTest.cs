@@ -632,6 +632,20 @@ public int TernaryOperatorMethod(int i)
             metric.Measure(root).Should().Be(3);
         }
 
+        [TestMethod]
+        public void Given_method_with_2_nested_ternary_operator_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int TernaryOperatorMethod(int i)
+{
+    i = i > 20 ? 10 : i < 10 ? 20 : 50;
+    return i;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
         #endregion
 
         #region null coalescing (??) operator
@@ -659,6 +673,52 @@ public int NullCoalescingOperatorMethod(object i)
     i = i ?? null;
     i = i ?? 50;
     return Convert.ToInt32(i);
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        [TestMethod]
+        public void Given_method_with_2_nested_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public int NullCoalescingOperatorMethod(object i, object e)
+{
+    i = i ?? e ?? 50;
+    return Convert.ToInt32(i);
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(3);
+        }
+
+        #endregion
+
+        #region Mixed
+
+        [TestMethod]
+        public void Given_method_with_ternary_and_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_2()
+        {
+            var code = @"
+public int TernaryOperatorMethod(object i)
+{
+    var res = Convert.ToInt32(i) > 10 ? 10 : (int?)null ?? 50;
+    return res;
+}";
+            var root = ParseMethodBlock(code);
+
+            metric.Measure(root).Should().Be(2);
+        }
+
+        [TestMethod]
+        public void Given_method_with_ternary_and_2_null_coalescing_operator_of_1_condition_when_metric_measure_should_be_3()
+        {
+            var code = @"
+public Object TernaryOperatorMethod(int i, object j)
+{
+    Object res = i > 10 ? 10 : null ?? j ?? 50;
+    return res;
 }";
             var root = ParseMethodBlock(code);
 

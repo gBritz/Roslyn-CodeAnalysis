@@ -70,20 +70,42 @@ namespace RoslynCodeAnalysis.Domain.Metrics
 
                 case SyntaxKind.EqualsToken:
                     // Identificar se é ?: ou ??
-                    if (token.Parent is AssignmentExpressionSyntax)
+                    // TODO: Create parsers to ternary operations
+                    if (token.Parent is AssignmentExpressionSyntax || token.Parent is EqualsValueClauseSyntax)
                     {
                         var str = token.Parent.GetText().ToString();
                         if (str.Contains("??"))
                         {
-                            cc += 1;
+                            var countNull = CountSubIn(str, "??");
+                            cc += (Int32)countNull;
                         }
                         else if (str.Contains("?") && str.Contains(":"))
                         {
-                            cc += 1;
+                            var countTernary = str.Count(s => s == '?' || s == ':') / 2;
+                            cc += (Int32)countTernary;
                         }
                     }
                     break;
+
+                /*
+SyntaxKind.QuestionToken === ?
+SyntaxKind.ColonToken === :
+SyntaxKind.SemicolonToken === ;
+                */
             }
+        }
+
+        //TODO: refactor, using regex.
+        private static Int32 CountSubIn(String expr, String sub)
+        {
+            var count = 0;
+            var lastIndex = 0;
+            while ((lastIndex = expr.IndexOf(sub, lastIndex)) > -1)
+            {
+                count += 1;
+                lastIndex += 1;
+            }
+            return count;
         }
     }
 }
